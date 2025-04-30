@@ -1,7 +1,7 @@
 services:
   backend:
     build: ./backend
-    container_name: portfolio-backend
+    container_name: lucas-ssh-backend
     environment:
       FRONTEND_URL: ${FRONTEND_URL}
       DB_DATABASE: ${DB_DATABASE}
@@ -17,7 +17,7 @@ services:
       
   frontend:
     build: ./frontend
-    container_name: portfolio-frontend
+    container_name: lucas-ssh-frontend
     volumes:
       - ./frontend/src:/app/src
     depends_on:
@@ -28,11 +28,11 @@ services:
 
   redis:
     image: redis
-    container_name: portfolio-redis
+    container_name: lucas-ssh-redis
 
   apigateway:
     image: nginx
-    container_name: portfolio-apigateway
+    container_name: lucas-ssh-apigateway
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
@@ -43,7 +43,7 @@ services:
 
   db:
     image: postgres
-    container_name: portfolio-db
+    container_name: lucas-ssh-db
     environment:
       POSTGRES_DB: ${DB_DATABASE}
       # POSTGRES_PASSWORD: ${DB_PASSWORD_READONLY}
@@ -58,7 +58,7 @@ services:
     
   db-adminer:
     image: adminer
-    container_name: portfolio-db-adminer
+    container_name: lucas-ssh-db-adminer
     depends_on:
       - db
     ports:

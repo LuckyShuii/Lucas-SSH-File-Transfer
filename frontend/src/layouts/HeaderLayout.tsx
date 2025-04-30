@@ -1,10 +1,10 @@
 import React from 'react';
 import type { MenuProps } from 'antd';
-import { Dropdown, message, Space, Button } from 'antd';
+import { Dropdown, Space, Button } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 
 const onClick: MenuProps['onClick'] = ({ key }) => {
-    message.info(`Click on item ${key}`);
+    console.log(`Click on item ${key}`);
 };
 
 const items: MenuProps['items'] = [
@@ -29,9 +29,10 @@ const items: MenuProps['items'] = [
 const HeaderLayout: React.FC = () => {
     return <div className='flex justify-between items-center w-full mt-[55px]'>
         <img src='/src/assets/main-logo.svg' alt='Logo' />
+        {/* TODO: not display this second div if user is not logged in */}
         <div className='flex items-center'>
             <h1 className='text-[20px]'>WELCOME <span className='text-main-green'>pseudo</span></h1>
-            <Button type='primary' icon={<img src='/src/assets/icons/ssh.svg' />} iconPosition='start' className='!w-[200px] !h-[50px] mx-[23px] !text-[20px]'>Transfer now</Button>
+            <Button type='primary' icon={<img src='/src/assets/icons/ssh.svg' />} iconPosition='start' className='!w-[200px] !h-[50px] mx-[23px] !text-[20px] flex items-center'>Transfer now</Button>
             <Dropdown menu={{ items, onClick }} className='flex items-center' placement="bottom">
                 <a onClick={(e) => e.preventDefault()}>
                     <Space>

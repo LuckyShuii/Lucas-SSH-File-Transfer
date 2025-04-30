@@ -3,11 +3,16 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import HeaderLayout from './HeaderLayout';
 import FooterLayout from './FooterLayout';
+import SignUpPage from '@/pages/SignUpPage';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <LoginPage />,
+  },
+  {
+    path: "/signup",
+    element: <SignUpPage />,
   },
   {
     path: "/login",
