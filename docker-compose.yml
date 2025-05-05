@@ -20,6 +20,7 @@ services:
     container_name: lucas-ssh-frontend
     environment:
       - VITE_BACKEND_URL=${BACKEND_URL}
+      - VITE_FRONTEND_URL=${FRONTEND_URL}
     volumes:
       - ./frontend/src:/app/src
     depends_on:

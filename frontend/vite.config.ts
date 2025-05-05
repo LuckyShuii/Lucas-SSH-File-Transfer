@@ -19,7 +19,8 @@ export default defineConfig({
     watch: { usePolling: true },
     allowedHosts: [
       "http://localhost:7002/",
-      "frontend"
+      "frontend",
+      import.meta.env.VITE_FRONTEND_URL
     ]
   },
   css: {
