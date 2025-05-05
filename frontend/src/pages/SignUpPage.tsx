@@ -4,18 +4,8 @@ import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { Alert } from 'antd';
-
-/**
- * @SignUpPageProps is a TypeScript interface that defines the structure of the props
- * It is used to type the form values in the SignUpPage component.
- */
-type SignUpPageProps = {
-    username: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-    rgpd: boolean;
-};
+import type { SignUpPageProps } from '@/types/SignUpProps';
+import { onValuesChange } from '@/components/SignUpPage/onValuesChange';
 
 const SignUpPage: React.FC = () => {
     // State variables to manage form submission and error/success messages
@@ -23,29 +13,6 @@ const SignUpPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [form] = Form.useForm();
-
-    /**
-     * onValuesChange is a callback function that is called when the form values change.
-     * 
-     * @param changedValues values that have changed, not used here
-     * @param allValues all values of the form
-     */
-    const onValuesChange = (changedValues: undefined, allValues: SignUpPageProps) => {
-        // Check if all required fields are filled and if the password and confirm password match to enable the submit button
-        if (
-            allValues.username 
-            && allValues.email 
-            && allValues.rgpd 
-            && allValues.rgpd 
-            && allValues.confirmPassword 
-            && allValues.confirmPassword === allValues.password 
-            && allValues.password
-        ) {
-            setIsDisabled(false);
-        } else {
-            setIsDisabled(true);
-        }
-    };
 
     /**
      * onFinish is a callback function that is called when the form is submitted.
@@ -85,7 +52,7 @@ const SignUpPage: React.FC = () => {
         <div className='border-2 border-main-blue/20 rounded-xl px-[70px] py-[30px]'>
             <h2 className='text-[28px] font-bold text-center mb-[35px]'>Create an account</h2>
             {/* @onFinish is the function that will be called when the form is submitted */}
-            <Form layout="vertical" onFinish={onFinish} className='w-[300px]' onValuesChange={onValuesChange} form={form}>
+            <Form layout="vertical" onFinish={onFinish} className='w-[300px]' onValuesChange={(changed, all) => onValuesChange(changed, all, setIsDisabled)} form={form}>
                 
                 {/* USERNAME INPUT */}
                 <Form.Item
@@ -201,3 +168,4 @@ const SignUpPage: React.FC = () => {
 };
 
 export default SignUpPage;
+export { onValuesChange };
