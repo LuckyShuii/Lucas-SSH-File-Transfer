@@ -18,6 +18,8 @@ class BaseSchema(ORMBaseSchema):
                 if type(annotation_type) == str:
                     if annotation_type in REFS:
                         cls_refs[annotation_type] = REFS[annotation_type]
+                    else:
+                        print("Can't find reference for", annotation_type)
             if cls_refs:
                 cls.update_forward_refs(**cls_refs)
 

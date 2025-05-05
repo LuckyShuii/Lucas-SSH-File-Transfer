@@ -16,6 +16,8 @@ class Database:
         Database.engine = create_engine(Database.URL)
         Database.Session = sessionmaker(bind=Database.engine, autocommit=False, autoflush=False)
 
+        metadata.create_all(Database.engine)
+
     @staticmethod
     def generate_url(db_name: str):
         return f"postgresql://{Config.DB_USER}:{Config.DB_PASSWORD}@{Config.DB_HOST}:{Config.DB_PORT}/{db_name}"

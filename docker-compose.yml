@@ -18,6 +18,8 @@ services:
   frontend:
     build: ./frontend
     container_name: lucas-ssh-frontend
+    environment:
+      - VITE_BACKEND_URL=${BACKEND_URL}
     volumes:
       - ./frontend/src:/app/src
     depends_on:
@@ -46,10 +48,8 @@ services:
     container_name: lucas-ssh-db
     environment:
       POSTGRES_DB: ${DB_DATABASE}
-      # POSTGRES_PASSWORD: ${DB_PASSWORD_READONLY}
-      # POSTGRES_USER: ${DB_USER_READONLY}
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres 
+      POSTGRES_PASSWORD: ${DB_PASSWORD_READONLY}
+      POSTGRES_USER: ${DB_USER_READONLY}
     volumes:
       - ./backend/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
       - ./pgdata:/var/lib/postgresql/data

@@ -1,1 +1,1 @@
-from .tags_model import Tags
+from .user_model import User

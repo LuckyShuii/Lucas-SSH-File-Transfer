@@ -6,3 +6,4 @@ alembic
 python-dotenv
 psycopg2-binary
 sqlalchemy-pydantic-orm==0.1.0
+bcrypt==4.3.0

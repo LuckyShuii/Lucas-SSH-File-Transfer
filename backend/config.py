@@ -10,6 +10,6 @@ class Config(object):
     ## DATABASE ##
     DB_DATABASE = os.getenv('DB_DATABASE')
     DB_HOST = os.getenv('DB_HOST')
-    DB_PASSWORD = os.getenv('DB_PASSWORD_READONLY')
+    DB_PASSWORD = os.getenv('DB_PASSWORD')
     DB_PORT = os.getenv('DB_PORT')
-    DB_USER = os.getenv('DB_USER_READONLY')
+    DB_USER = os.getenv('DB_USER')

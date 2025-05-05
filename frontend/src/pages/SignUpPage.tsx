@@ -2,10 +2,31 @@ import React from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
+import axios from 'axios';
+
+type SignUpPageProps = {
+    username: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    rgpd: boolean;
+};
 
 const SignUpPage: React.FC = () => {
-const onFinish = (values: any) => {
+const onFinish = (values: SignUpPageProps) => {
     console.log('Form submitted:', values);
+
+    try {
+        // Send a POST request to the server with the form data
+        axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/signup`, {
+            username: values.username,
+            email: values.email,
+            password: values.password,
+            rgpd: values.rgpd,
+        })
+    } catch (error) {
+        console.error('Error during signup:', error);
+    }
 };
 
 return (

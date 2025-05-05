@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from db.models import *
 from database import Database
-from routers import tag, api
+from routers import api, user
 from fastapi.middleware.cors import CORSMiddleware
 from config import Config
 from db.schemas.base_schema import BaseSchema
@@ -20,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(tag.router)
+app.include_router(user.router)
 app.include_router(api.router)
 
 @app.on_event("startup")
