@@ -10,7 +10,7 @@ class UserManager(BaseManager, repository=UserRepository):
 
     # @user_create is a Pydantic model type that defines the structure of the data 
     # this method is used in /routes/user.py for user signup puposes
-    async def signup_user(self, user_create: UserCreate) -> User:
+    async def signup_user(self, user_create: UserCreate):
 
         # Make sure the user checked the RGPD policy
         # This is a requirement for the user to be able to register
@@ -55,4 +55,15 @@ class UserManager(BaseManager, repository=UserRepository):
         user_obj = User(**data)
 
         # Create the user in the database
-        return await self.repository.create(user_obj)
+        new_user = await self.repository.create(user_obj)
+
+        if not new_user:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="User could not be created"
+            )
+        
+        raise HTTPException(
+            status_code=status.HTTP_201_CREATED,
+            detail="User created successfully"
+        )
