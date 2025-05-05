@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import envCompatible from "vite-plugin-env-compatible";
@@ -20,7 +21,7 @@ export default defineConfig({
     allowedHosts: [
       "http://localhost:7002/",
       "frontend",
-      import.meta.env.VITE_FRONTEND_URL
+      "wildtransfer.fr"
     ]
   },
   css: {
