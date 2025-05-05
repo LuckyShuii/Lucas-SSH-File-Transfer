@@ -17,7 +17,7 @@ class UserManager(BaseManager, repository=UserRepository):
         if user_create.rgpd is False:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="You must accept the RGPD policy"
+                detail="You must accept the terms and conditions"
             )
 
         # Check if the username already exists in the database
@@ -36,7 +36,7 @@ class UserManager(BaseManager, repository=UserRepository):
         if existing_username or existing_email:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User already registered"
+                detail="Username or email already exists"
             )
 
         # convert the user_create object to a dictionary to remove the rgpd field

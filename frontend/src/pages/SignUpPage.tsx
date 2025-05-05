@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Icon } from '@iconify/react';
 import axios from 'axios';
+import { Alert } from 'antd';
 
+/**
+ * @SignUpPageProps is a TypeScript interface that defines the structure of the props
+ * It is used to type the form values in the SignUpPage component.
+ */
 type SignUpPageProps = {
     username: string;
     email: string;
@@ -13,118 +18,186 @@ type SignUpPageProps = {
 };
 
 const SignUpPage: React.FC = () => {
-const onFinish = (values: SignUpPageProps) => {
-    console.log('Form submitted:', values);
+    // State variables to manage form submission and error/success messages
+    const [isDisabled, setIsDisabled] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+    const [form] = Form.useForm();
 
-    try {
-        // Send a POST request to the server with the form data
-        axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/signup`, {
-            username: values.username,
-            email: values.email,
-            password: values.password,
-            rgpd: values.rgpd,
-        })
-    } catch (error) {
-        console.error('Error during signup:', error);
-    }
-};
+    /**
+     * onValuesChange is a callback function that is called when the form values change.
+     * 
+     * @param changedValues values that have changed, not used here
+     * @param allValues all values of the form
+     */
+    const onValuesChange = (changedValues: undefined, allValues: SignUpPageProps) => {
+        // Check if all required fields are filled and if the password and confirm password match to enable the submit button
+        if (
+            allValues.username 
+            && allValues.email 
+            && allValues.rgpd 
+            && allValues.rgpd 
+            && allValues.confirmPassword 
+            && allValues.confirmPassword === allValues.password 
+            && allValues.password
+        ) {
+            setIsDisabled(false);
+        } else {
+            setIsDisabled(true);
+        }
+    };
 
-return (
-    <div className='border-2 border-main-blue/20 rounded-xl px-[100px] py-[70px]'>
-      <h2 className='text-[28px] font-bold text-center mb-[45px]'>Sign up</h2>
-      <Form layout="vertical" onFinish={onFinish} className='w-[300px]'>
+    /**
+     * onFinish is a callback function that is called when the form is submitted.
+     * 
+     * @param values values of the form
+     */
+    const onFinish = async (values: SignUpPageProps) => {
+        try {
+            // Send a POST request to the server with the form data
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/signup`, {
+                username: values.username,
+                email: values.email,
+                password: values.password,
+                rgpd: values.rgpd,
+            });
 
-        {/* USERNAME INPUT */}
-        <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Please enter your username' }]}
-            className='!mb-[50px]'
-        >
-            <Input
-                placeholder="Username"
-                prefix={<img src='/src/assets/icons/username.svg' className='ml-[-5px] mr-4 w-6' />}
-                variant="underlined"
-            />
-        </Form.Item>
+            if (error) {
+                // If there is an error, set the error state to null
+                setError(null);
+            }
 
-        {/* EMAIL INPUT */}
-        <Form.Item
-            name="email"
-            rules={[{ required: true, type: 'email', message: 'Please enter a valid email' }]}
-            className='!mb-[50px]'
-        >
-            <Input
-                placeholder="Email"
-                prefix={<img src='/src/assets/icons/mail.svg' className='ml-[-5px] mr-4 w-6' />}
-                variant="underlined"
-            />
-        </Form.Item>
+            // Set success message state
+            setSuccess("Account created successfully. Please check your mailbox to activate your account.");
 
-        {/* PASSWORD INPUT */}
-        <Form.Item
-            name="password"
-            rules={[{ required: true, message: 'Please enter your password' }]}
-            className='!mb-[50px]'
-        >
-            <Input.Password
-                placeholder="Password"
-                prefix={<img src='/src/assets/icons/password.svg' className='ml-[-5px] mr-4 w-6' />}
-                iconRender={(visible) => visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />}
-                variant="underlined"
-            />
-        </Form.Item>
+            // Reset form on submit success
+            form.resetFields();
+        } catch (error) {
+            // Set success message state to null
+            setSuccess(null);
 
-        {/* CONFIRM PASSWORD INPUT */}
-        <Form.Item
-            name="confirmPassword"
-            dependencies={["password"]}
-            className='!mb-[50px]'
-            rules={[ 
-                { required: true, message: 'Please confirm your password' },
-                ({ getFieldValue }) => ({
-                validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                    return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('Passwords do not match'));
-                },
-                }),
-            ]}
-        >
-            <Input.Password
-                placeholder="Confirm Password"
-                prefix={<img src='/src/assets/icons/password.svg' className='ml-[-5px] mr-4 w-6' />}
-                iconRender={(visible) => visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />}
-                variant="underlined"
-            />
-        </Form.Item>
+            // Set error message state
+            setError(error.response.data.detail);
+        }
+    };
 
-        {/* RGPD NUMBER CHECKBOX */}
-        <Form.Item
-            name="rgpd"
-            valuePropName="checked"
-            rules={[{ required: true, message: 'You must agree to the terms' }]}
-            className='!mb-[40px]'
-        >
-            <Checkbox>
-                I agree to the <a href="#" className='text-main-blue'>terms and conditions</a>
-            </Checkbox>
-        </Form.Item>
+    return (
+        <div className='border-2 border-main-blue/20 rounded-xl px-[70px] py-[30px]'>
+            <h2 className='text-[28px] font-bold text-center mb-[35px]'>Create an account</h2>
+            {/* @onFinish is the function that will be called when the form is submitted */}
+            <Form layout="vertical" onFinish={onFinish} className='w-[300px]' onValuesChange={onValuesChange} form={form}>
+                
+                {/* USERNAME INPUT */}
+                <Form.Item
+                    name="username"
+                    rules={[{ required: true, message: 'Please enter your username' }]}
+                    className='!mb-[40px]'
+                >
+                    <Input
+                        placeholder="Username"
+                        prefix={<img src='/src/assets/icons/username.svg' className='ml-[-5px] mr-4 w-6' />}
+                        variant="underlined"
+                    />
+                </Form.Item>
 
-        {/* SUBMIT BUTTON */}
-        <Form.Item>
-            <Button
-                type='primary'
-                htmlType='submit'
-                icon={<Icon icon="line-md:login" className='w-[22px]' />}
-                className='!h-[50px] w-full flex items-center justify-center !text-[18px]'
-            >
-                Transfer now
-            </Button>
-        </Form.Item>
-      </Form>
-    </div>
-  );
+                {/* EMAIL INPUT */}
+                <Form.Item
+                    name="email"
+                    rules={[{ required: true, type: 'email', message: 'Please enter a valid email' }]}
+                    className='!mb-[40px]'
+                >
+                    <Input
+                        placeholder="Email"
+                        prefix={<img src='/src/assets/icons/mail.svg' className='ml-[-5px] mr-4 w-6' />}
+                        variant="underlined"
+                    />
+                </Form.Item>
+
+                {/* PASSWORD INPUT */}
+                <Form.Item
+                    name="password"
+                    rules={[{ required: true, message: 'Please enter your password' }]}
+                    className='!mb-[40px]'
+                >
+                    <Input.Password
+                        placeholder="Password"
+                        prefix={<img src='/src/assets/icons/password.svg' className='ml-[-5px] mr-4 w-6' />}
+                        iconRender={(visible) => visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />}
+                        variant="underlined"
+                    />
+                </Form.Item>
+
+                {/* CONFIRM PASSWORD INPUT */}
+                <Form.Item
+                    name="confirmPassword"
+                    dependencies={["password"]}
+                    className='!mb-[35px]'
+                    rules={[
+                        { required: true, message: 'Please confirm your password' },
+                        ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                if (!value || getFieldValue('password') === value) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('Passwords do not match'));
+                            },
+                        }),
+                    ]}
+                >
+                    <Input.Password
+                        placeholder="Confirm Password"
+                        prefix={<img src='/src/assets/icons/password.svg' className='ml-[-5px] mr-4 w-6' />}
+                        iconRender={(visible) => visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />}
+                        variant="underlined"
+                    />
+                </Form.Item>
+
+                {/* RGPD NUMBER CHECKBOX */}
+                <Form.Item
+                    name="rgpd"
+                    valuePropName="checked"
+                    rules={[{ required: true, message: 'You must agree to the terms' }]}
+                    className='!mb-[30px]'
+                >
+                    <Checkbox>
+                        I agree to the <a href="#" className='text-main-blue'>terms and conditions</a>
+                    </Checkbox>
+                </Form.Item>
+
+                {/* SUBMIT BUTTON */}
+                <Form.Item>
+                    <Button
+                        type='primary'
+                        htmlType='submit'
+                        icon={<Icon icon="line-md:login" className='w-[22px]' />}
+                        className='!h-[50px] w-full flex items-center justify-center !text-[18px] mb-[-10px]'
+                        disabled={isDisabled}
+                    >
+                        Sign up
+                    </Button>
+                </Form.Item>
+
+                {/* ERROR MESSAGE */}
+                {error && (
+                    <Alert
+                        description={error}
+                        type="error"
+                        closable
+                        className='!h-[50px] flex !items-center'
+                    />
+                )}
+
+                {/* SUCCESS MESSAGE */}
+                {success && (
+                    <Alert
+                        description={success}
+                        type="success"
+                        closable
+                    />
+                )}
+            </Form>
+        </div>
+    );
 };
 
 export default SignUpPage;
