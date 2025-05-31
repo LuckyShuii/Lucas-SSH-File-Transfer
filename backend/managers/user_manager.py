@@ -93,12 +93,16 @@ class UserManager(BaseManager, repository=UserRepository):
         )
 
     async def activate_account(self, token: str):
-        decoded_token = JwtGenerator().decode_token(token)
+        try:
+            decoded_token = JwtGenerator().decode_token(token)
+        except Exception as e:
+            print(f"Error decoding token: {e}")
+            decoded_token = None
 
         if not decoded_token:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid token"
+                detail="An error occured while activating your account, the link seems to be invalid or expired."
             )
         
         # Get the user by UUID from the decoded token
@@ -111,22 +115,26 @@ class UserManager(BaseManager, repository=UserRepository):
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="User not found"
             )
+        # return user.is_activated
+        if user.is_activated == 1:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Your account is already activated!"
+            )
         
         # Activate the user account
         user.is_activated = 1
 
         updated_user = await self.repository.patch_where(user, User.uuid == user.uuid)
 
-        print(f"Updated user: {updated_user.is_activated}")
-
         if not updated_user:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="User could not be activated"
+                detail="Your account could not be activated, please try again later or contact support."
             )
         
         raise HTTPException(
             status_code=status.HTTP_200_OK,
-            detail="User account activated successfully"
+            detail="Your account was activated successfully!"
         )
     
