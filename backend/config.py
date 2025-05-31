@@ -13,3 +13,10 @@ class Config(object):
     DB_PASSWORD = os.getenv('DB_PASSWORD')
     DB_PORT = os.getenv('DB_PORT')
     DB_USER = os.getenv('DB_USER')
+
+    ## MAIL KEYS ##
+    MAIL_API_KEY = os.getenv('MAIL_API_KEY')
+    MAIL_SECRET_KEY = os.getenv('MAIL_SECRET_KEY')
+
+    ## JWT KEYS ##
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')

@@ -9,6 +9,9 @@ services:
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER_READONLY}
       DB_PASSWORD: ${DB_PASSWORD_READONLY}
+      MAIL_API_KEY: ${MAIL_API_KEY}
+      MAIL_SECRET_KEY: ${MAIL_SECRET_KEY}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
     volumes:
       - ./backend:/app
     ports:

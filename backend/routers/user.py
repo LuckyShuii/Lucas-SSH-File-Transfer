@@ -7,3 +7,7 @@ router = APIRouter(prefix="/api/user",tags=["user"],responses={404: {"descriptio
 @router.post("/signup")
 async def signup(payload: UserCreate, manager = Depends(UserManager())):
     return await manager.signup_user(payload)
+
+@router.post("/activate_account/{token}")
+async def activate_account(token: str, manager = Depends(UserManager())):
+    return await manager.activate_account(token)

@@ -7,3 +7,5 @@ python-dotenv
 psycopg2-binary
 sqlalchemy-pydantic-orm==0.1.0
 bcrypt==4.3.0
+mailjet-rest==1.3.4
+pyjwt==2.10.1

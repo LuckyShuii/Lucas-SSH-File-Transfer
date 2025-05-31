@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import HeaderLayout from './HeaderLayout';
 import FooterLayout from './FooterLayout';
 import SignUpPage from '@/pages/SignUpPage';
+import ActivateAccountPage from '@/pages/ActivateAccountPage';
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/activate-account",
+    element: <ActivateAccountPage />,
   },
   {
     path: "*",
